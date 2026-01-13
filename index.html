@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi DUKOP Dashboard</title>
+    
+    <!-- PWA Metadata -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+    <link rel="apple-touch-icon" href="assets/icons/icon-192x192.png">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="logo">
+                <i class="fas fa-clipboard-check"></i>
+            </div>
+            <h1>ABSENSI DUKOP</h1>
+            <p class="subtitle">Dashboard Monitoring Kehadiran</p>
+            
+            <a href="https://script.google.com/macros/s/AKfycby0j82EWkBwJf3SQGXiyMgtenF_E0KIZeB38LhwITR2PQ4t2JZceSe2G2JlqZWlBuZOhg/exec" 
+               class="btn-download">
+                <i class="fas fa-download"></i> 
+                BUKA DASHBOARD
+            </a>
+            
+            <div class="info">
+                <p><i class="fas fa-info-circle"></i> Aplikasi dapat diinstall sebagai PWA</p>
+                <p><i class="fas fa-mobile-alt"></i> Tekan "Add to Home Screen"</p>
+            </div>
+            
+            <div class="install-guide">
+                <details>
+                    <summary><i class="fas fa-question-circle"></i> Cara Install PWA</summary>
+                    <div class="steps">
+                        <p><strong>Android/Chrome:</strong></p>
+                        <p>1. Buka menu (⋮) → "Install app"</p>
+                        <p>2. Konfirmasi install</p>
+                        
+                        <p><strong>iOS/Safari:</strong></p>
+                        <p>1. Tap share (⎙) → "Add to Home Screen"</p>
+                        <p>2. Beri nama → "Add"</p>
+                    </div>
+                </details>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>DUKOP Absensi System &copy; 2024</p>
+        </footer>
+    </div>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registered:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
+        
+        // Prompt install PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Tampilkan button install (opsional)
+            setTimeout(() => {
+                showInstallPrompt();
+            }, 3000);
+        });
+        
+        function showInstallPrompt() {
+            if (deferredPrompt) {
+                const installBtn = document.createElement('button');
+                installBtn.className = 'btn-install';
+                installBtn.innerHTML = '<i class="fas fa-plus-circle"></i> INSTALL APP';
+                installBtn.onclick = installPWA;
+                
+                document.querySelector('.card').appendChild(installBtn);
+            }
+        }
+        
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted install');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+        
+        // Deteksi jika app diinstall sebagai PWA
+        window.addEventListener('appinstalled', () => {
+            console.log('🎉 PWA installed successfully!');
+        });
+    </script>
+</body>
+</html>
